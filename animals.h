@@ -16,7 +16,7 @@
 #include <cstdlib>
 
 template <class T>
-class binary_tree {
+class binary_tree_node {
 public:
 	T data;
 	binary_tree_node<T>* left;
@@ -27,6 +27,7 @@ public:
 	string save_game_tree(binary_tree_node<string>* root);
 	string delete_game_tree(binary_tree_node<string>* root);
 	void read_game_tree();
+	void traverse(binary_tree_node<T>* root);
 private:
 	node<string>* root;
 };
