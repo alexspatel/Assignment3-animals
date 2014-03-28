@@ -23,11 +23,17 @@ public:
 	binary_tree_node<T>* right;
 	binary_tree_node<T>* root;
 
+
+	binary_tree_node();		// constructor
+	~binary_tree_node();	// destructor
 	string play_game(binary_tree_node<string>* root);
 	string save_game_tree(binary_tree_node<string>* root);
 	string delete_game_tree(binary_tree_node<string>* root);
 	void read_game_tree();
 	void traverse(binary_tree_node<T>* root);
+	void remove(binary_tree_node<T>*&root, T val);
+	void insert(binary_tree_node<T>*&root, T val);
+	binary_tree_node<T>* search(binary_tree_node<T>* root, T val);
 private:
 	node<string>* root;
 };
