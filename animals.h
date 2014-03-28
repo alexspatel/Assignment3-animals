@@ -25,16 +25,16 @@ public:
 
 
 	binary_tree_node();		// constructor
-	~binary_tree_node();	// destructor
-	string play_game(binary_tree_node<string>* root);
-	string save_game_tree(binary_tree_node<string>* root);
-	string delete_game_tree(binary_tree_node<string>* root);
+	//~binary_tree_node();	// destructor
+	void play_game(binary_tree_node<T>* root);
+	void save_game_tree(binary_tree_node<T>* root);
+	void delete_game_tree(binary_tree_node<T>* root);
 	void read_game_tree();
 	void traverse(binary_tree_node<T>* root);
 	void remove(binary_tree_node<T>*&root, T val);
 	void insert(binary_tree_node<T>*&root, T val);
-	binary_tree_node<T>* search(binary_tree_node<T>* root, T val);
+	void read_preorder(ifstream<T> &fin, binary_tree_node<T>*&root);
 private:
-	node<string>* root;
+	node<T>* root;
 };
 #endif
