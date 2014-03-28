@@ -1,3 +1,13 @@
+/*
+	FILE: animals.cpp
+
+	AUTHOR: Alex Patel
+
+	For CSCI 262, Spring 2014, Assignment 3
+
+	.cpp file for the game 20 questions, with subject: animals
+*/
+
 #include "animals.h"
 #include <iostream>
 #include <fstream>
@@ -25,11 +35,10 @@ binary_tree_node()
 
 
 template <class T>
-void binary_tree_node::traverse(binary_tree_node<string>* root)
+void binary_tree_node::traverse(binary_tree_node<T>* root)
 {
 	if( root != NULL )
 	{
-		// root -> data
 		traverse(root->left);
 		traverse(root->right);
 	}
@@ -38,23 +47,20 @@ void binary_tree_node::traverse(binary_tree_node<string>* root)
 
 // Reads the game tree from the input file
 template <class T>
-void binary_tree_node::read_game_tree()
+void binary_tree_node<T>::read_game_tree()
 {
-	string root_in;
-	string left_in;
-	string right_in;
-	ifstream readFile;
-	readFile.open("animals.txt");
-	if( readFile.is_open() ) 
+	string qORa;
+	string text;
+
+	ifstream fin;
+	fin.open("animals.txt");
+
+	if( fin.is_open() ) 
 	{
-		while( !readFile.eof() )
+		while( !fin.eof() )
 		{
-			readFile >> root_in;
-			readFile >> left_in;
-			readFile >> right_in;
-			cout << root_in << endl;
-			cout << left_in << endl;
-			cout << right_in << endl;
+			fin >> qORa;
+			getline(fin,text);
 		}
 	}
 
@@ -63,50 +69,12 @@ void binary_tree_node::read_game_tree()
 
 // Remove a node from the tree
 template <class T>
-void binary_tree_node::remove(binary_tree_node<string>*&root, string val)
+void binary_tree_node<T>::remove(binary_tree_node<T>*&root, string val)
 {
-	// BASE CASE: IF ITEM NOT FOUND, DO NOTHING
 	if( root == NULL ) return NULL;
 
-	// FIND THE ITEM TO DELETE
 	if( val < root->data ) remove( root->left, val );
-	else if( val > root ->data ) remove(root->right, val );
-	
-	// CASE 1 & 2: NO CHILDREN, ONE CHILD
-	else // item found
-	{
-		if( root->left == NULL || root->right == NULL )
-		{
-			binary_tree_node<string>* temp;
-			if( root->left == NULL ) temp = root->right;
-			else temp = root->left;
-			delete root;
-			root = temp;
-		}
-
-		// CASE 3: TWO CHILDREN
-		else
-		{
-			binary_tree_node<string>* temp = root->left; // find rightmost node
-			binary_tree_node<string>* parent = root;	 // in left subtree
-			while( temp->right != NULL )
-			{
-				parent = temp;
-				temp = temp->right;
-			}
-			root->data = temp->data; // copy data to root
-
-			if( parent == root )	 // detach and delete rightmost node
-			{
-				root->left = temp->left; // in left subtree
-			}
-			else
-			{
-				parent->right = temp->left;
-			}
-			delete temp;
-		}
-	}
+	else if( val > root ->data ) remove(root->right, val );	
 
 }
 
@@ -114,7 +82,7 @@ void binary_tree_node::remove(binary_tree_node<string>*&root, string val)
 
 // insert a value into the tree by adding a new node
 template <class T>
-void binary_tree_node::insert(binary_tree_node<string>*& root, string val)
+void binary_tree_node<T>::insert(binary_tree_node<T>*& root, string val)
 {
 	if( root == NULL ) root = new binary_tree_node<string>(val);
 	else if( val < root->data ) insert(root->left, val);
@@ -122,13 +90,22 @@ void binary_tree_node::insert(binary_tree_node<string>*& root, string val)
 }
 
 
-// search function
-template  <class T>
-binary_tree_node<T>* search(binary_tree_node<T>* root, T val)
-{
-	if( root == NULL ) return NULL;
-	if( val == root->data ) return root;
-	if( val < root->data ) return search( root->left, val );
 
-	return search( root->right, val );
+
+// read_preorder
+template <class T>
+void binary_tree_node<T>::read_preorder(ifstream &fin, binary_tree_node<T>*&root)
+{
+	if( fin == "Q" )  
+	{
+			root->left = new binary_tree_node();
+			root->right = new binary_tree_node();
+			read_preorder(fin, node->left);
+	}
+	else
+	{
+		root->left = new binary_tree_node();
+		root->right = new binary_tree_node();
+		read_preorder(fin, node->right);
+	}
 }
