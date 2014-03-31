@@ -2,7 +2,7 @@
 		FILE: animals.h
 		AUTHOR: Alex Patel
 
-		For CSCI 262, Spring 2014, Assignment 2
+		For CSCI 262, Spring 2014, Assignment 3
 
 		Header file for the game, 20 questions, with subject: animals
 */
@@ -16,25 +16,31 @@
 #include <cstdlib>
 
 template <class T>
-class binary_tree_node {
-public:
+class binary_tree_node 
+{
 	T data;
 	binary_tree_node<T>* left;
 	binary_tree_node<T>* right;
-	binary_tree_node<T>* root;
-
-
-	binary_tree_node();		// constructor
-	//~binary_tree_node();	// destructor
-	void play_game(binary_tree_node<T>* root);
-	void save_game_tree(binary_tree_node<T>* root);
-	void delete_game_tree(binary_tree_node<T>* root);
-	void read_game_tree();
-	void traverse(binary_tree_node<T>* root);
-	void remove(binary_tree_node<T>*&root, T val);
-	void insert(binary_tree_node<T>*&root, T val);
-	void read_preorder(ifstream<T> &fin, binary_tree_node<T>*&root);
-private:
-	node<T>* root;
 };
+
+template <class T>
+binary_tree_node<T>* create_node
+	( const T& entry,
+	binary_tree_node<T>* Lptr,
+	binary_tree_node<T>* Rptr
+	);
+
+template <class T>
+bool is_leaf(const binary_tree_node<T>& node );
+
+template <class T>
+void tree_clear(binary_tree_node<T>*& root_ptr );
+
+template <class T>
+binary_tree_node<T>* tree_copy(binary_tree_node<T>* root_ptr );
+
+template <class T>
+void remove(binary_tree_node<T>*& root, T val);
+
+
 #endif
