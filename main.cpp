@@ -1,235 +1,267 @@
 /*
-	FILE: main.cpp
-	AUTHOR: Alex Patel
-	
-	For CSCI 262, Spring 2014, Assignment 3
 
-	main.cpp file for the game 20 questions, with subject: animals
+	  FILE: main.cpp
+
+	  AUTHOR: Alex Patel
+
+	  For CSCI 262 Spring 2014, Assignment 3, 20 questions  
 
 */
 
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <sstream>
+#include <ostream>
 #include <cstdlib>
-#include <queue>
+#include <string>
 #include "animals.h"
+#include "animal2.h"
+#include <queue>
+
+
 
 using namespace std;
 
-// FUNCTION PROTOTYPES
-void instruct(); // instructions
+void instruct(); // the instructions
 
-binary_tree_node<string>* beg_tree(); // start questions/answers
+BinaryTreeNode<string>* beginning_tree();	// the starting questions and answers
 
-void learn(binary_tree_node<string>*& leaf_ptr); // fill and save user input
+void learn(BinaryTreeNode<string>*& leaf_ptr);	// fills in users input and saves it
 
-void ask_move_q(binary_tree_node<string>*& current_ptr); // point to next question
+void ask_and_move(BinaryTreeNode<string>*& current_ptr);	// moves pointer to next question if the question is answered with a no
 
-void play(binary_tree_node<string>* current_ptr); // user writes question
+void play(BinaryTreeNode<string>* current_ptr);	// asks user to think of a question
 
-void eat_line();
+void save_tree(BinaryTreeNode<string>* p, ostream &out); // save the game tree to file
 
-bool inquire(const char query[]);
-
+void write_to_file(BinaryTreeNode<string>* root_ptr); // creates a new file, calls the save_tree function
 
 
 
-int main() {
+
+
+int main()
+{
+	cout << "Welcome to 20 questions!" << endl;
+
+	BinaryTreeNode<string> *root_ptr;
 	
-	//while (true) {
-	//	int choice;
-	//	cout << "Welcome to 20 questions!" << endl;
-	//	cout << "  1) Play the game" << endl;
-	//	cout << "  2) Save the game file" << endl;
-	//	cout << "  3) Quit" << endl;
-	//	cout << "Please make your selection: ";
-	//	cin >> choice;
+	root_ptr = beginning_tree();	// set the beginning tree
 
-	//	switch (choice) {
-	//	case 1:
-	//		//play_game(root);
-	//		read_game_tree();
-	//		break;
-	//	case 2:
-	//		//save_game_tree(root);
-	//		break;
-	//	case 3:
-	//		break;
-	//	default:
-	//		cout << "Sorry, I don't understand." << endl << endl;
-	//	}
-	//	if (choice == 3) break;
-	//}
-	
-	binary_tree_node<string> *a_root_ptr;
+	while (true)
+	{
+		int choice;
+		instruct();	 // show insctructions
+		cin >> choice;
 
-	instruct(); // show the game instructions
-
-	a_root_ptr = beg_tree(); // set the beginning tree
-
-	do {
-		play(a_root_ptr); // play the game
-	} while( inquire("Shall we play again>") ); // play again until user enters no
+		switch (choice) {
+		case 1:
+			play(root_ptr);
+			break;
+		case 2: 
+			{
+				write_to_file(root_ptr);
+				break;
+			}
+		case 3:
+			return 0;
+			break;
+		default:
+			cout << "Sorry, I don't understand." << endl << endl;
+		}
+		if (choice == 3) break;
+	}
 
 	cout << "Thanks for playing!" << endl;
 
-
-	//delete_game_tree(root);
 	return 0;
 }
 
 
-void instruct() // game instructions
+// the game instructions
+void instruct()		
 {
-	cout << "Welcome to 20 questions!" << endl;
 	cout << "  1) Play the game" << endl;
-	cout << "  2) Save the game file" << endl;
+	cout << "  2) Save the game tree" << endl;
 	cout << "  3) Quit" << endl;
 	cout << "Please make your selection: ";
 }
 
 
-template <class T>
-binary_tree_node<string>* beg_tree()
+BinaryTreeNode<string>* beginning_tree()
 {
-	binary_tree_node<string> *root_ptr;
-	binary_tree_node<string> *child_ptr;
+	queue<string> store;
+	BinaryTreeNode<string> *root_ptr;
+	BinaryTreeNode<string> *child_ptr;
 
-	const string root_que("Are you a mammal?");
-	const string left_que("Are you bigger than a dog?");
-	const string right_que("Do you live underwater?");
-	const string animal1("Horse");
-	const string animal2("Squirel");
-	const string animal3("Seahorse");
-	const string animal4("Eagle");
+	string root_que;
+	string left_que;
+	string right_que;
+	string animal1;
+	string animal2;
+	string animal3;
+	string animal4;
 
-	root_ptr = create_node(root_question); // position at root question
+	// Read in the input file 
+	ifstream fin;
+	fin.open("AnimalINPUT.txt");
 
-	child_ptr = create_node(left_que); // left question
-	child_ptr->left = create_node(animal1); // left answer
-	child_ptr->right = create_node(animal2); // right answer
+	if(fin.is_open())
+	{
+			getline(fin,root_que);
+			//cout << root_que << endl;
+			store.push(root_que);
+
+			getline(fin,left_que);
+			//cout << left_que << endl;
+			store.push(left_que);
+
+			getline(fin,right_que);
+			//cout << right_que << endl;
+			store.push(right_que);
+
+			getline(fin,animal1);
+			//cout << animal1 << endl;
+			store.push(animal1);
+
+			getline(fin,animal2);
+			//cout << animal2 << endl;
+			store.push(animal2);
+
+			getline(fin,animal3);
+			//cout << animal3 << endl;
+			store.push(animal3);
+
+			getline(fin,animal4);
+			//cout << animal4 << endl;
+			store.push(animal4);
+			
+	}
+
+	fin.close(); // close the file
+
+
+	root_ptr = create_node(root_que);	//position root_ptr at the root question
+	
+	child_ptr = create_node(left_que);	//make the left question
+	child_ptr->left = create_node(animal1);	//make left answer
+	child_ptr->right = create_node(animal2);	//make right answer
+	root_ptr->left = child_ptr;
+
+	child_ptr = create_node(right_que);	//make the right question
+	child_ptr->left = create_node(animal3);	//make left answer
+	child_ptr->right = create_node(animal4);	//make right answer
 	root_ptr->right = child_ptr;
-
-	child_ptr = create_node(right_que); // right question
-	child_ptr->left = create_node(animal3); // left answer
-	child_ptr->right = create_node(animal4); // right answer
-	root_ptr->right = child_ptr;
-
+	
 	return root_ptr;
 }
 
-template <class T>
-void learn(binary_tree_node<string>*& leaf_ptr)
-{
-	string guess;
-	string correct;
-	string new_que;
+void learn(BinaryTreeNode<string>*& leaf_ptr)//inserts answer and question into
+{                                                 //the tree
+	string guess_animal;
+	string correct_animal;
+	string new_question;
 
-	guess = leaf_ptr->data;
-	cout << "You win! What animal are you?" << endl;
-	getline(cin, correct); // enter correct animal
+	guess_animal = leaf_ptr->data;
+	cout << "Boo! I don't know!" << endl;
+	cout << "What animal are you?" << endl;
+	getline(cin, correct_animal);	//enter the correct animal
+	correct_animal = "#A " + correct_animal;
 
-	// save the correct animal to file
-	ofstream animalOUT;
-	animalOUT.open("animalsO.txt");
-	if(!animalOUT.is_open())
+	// Ask the user to expand the game tree
+	if( inquire("Would you like to expand the game tree?") )
 	{
-		cout << "ERROR opening file" << endl;
-	}
-	else
-	{
-		animalOUT << correct << endl;
-	}
-	animalOUT.close();
+		cout << "Enter a y/n question that will distinguish a " << endl <<
+			correct_animal << " from a " << guess_animal << "." << endl;
 
-	cout << "Please type yes or no (y/n) that will distinguish a" << endl;
-	cout << correct << " from a " << guess << "." << endl;
-	getline(cin, new_que); // enter correct question
+		getline(cin, new_question);//enter the correct question
+		new_question = "#Q " + new_question;
+		cout << endl;
 
-	// save the new question to file
-	ofstream questionOUT;
-	questionOUT.open("questions.txt");
-	if(!questionOUT.is_open())
-	{
-		cout << "ERROR opening question file" << endl;
-	}
-	else if( questionOUT.is_open())
-	{
-		questionOUT << new_que << endl;
-	}
-	questionOUT.close();
+		//save the correct animal to a file
+		ofstream animal_file;
+		animal_file.open("Animals.txt");
+		if(!animal_file.is_open())
+			cout << "Error opening animal file!";
+		else if (animal_file.is_open())
+			animal_file << correct_animal << endl;
+		animal_file.close();
 
-	leaf_ptr->data = new_que;
-	cout << "As a " << correct << ", " << new_que << endl;
-	if( inquire("Please answer") ) // if yes, set correct to rightside answer
-	{
-		leaf_ptr->left = create_node(correct);
-		leaf_ptr->right = create_node(guess);
-	}
-	else
-	{
-		leaf_ptr->left = create_node(guess);
-		leaf_ptr->right = create_node(correct);
+		
+
+		//save the new question to a file
+		ofstream question_file;
+		question_file.open("Questions.txt");
+
+		if(!question_file.is_open())
+			cout << "Error opening question file!";
+		else if (question_file.is_open())
+			question_file << new_question << endl;
+		question_file.close();
+
+		leaf_ptr->data = new_question;
+		cout << "As a " << correct_animal << ", " << new_question << endl;
+		if (inquire("Please answer"))	//if yes then set the correct animal to be the right side answer
+		{                         
+			leaf_ptr->left = create_node(correct_animal);
+			leaf_ptr->right = create_node(guess_animal);
+		}
+		else //other wise make it the left side answer
+		{
+			leaf_ptr->left = create_node(guess_animal);
+			leaf_ptr->right = create_node(correct_animal);
+		}
+		save_tree(leaf_ptr, question_file);
+	
 	}
 }
 
-template <class T>
-void ask_move_q(binary_tree_node<string>*& current_ptr)
+void ask_and_move(BinaryTreeNode<string>*& current_ptr)	//reposition the pointer
 {
 	cout << current_ptr->data;
-
-	if(inquire(" Please answer")) // if yes, position left ptr
-	{
+	if (inquire(" Please answer"))	// if answer is yes then position pointer left
 		current_ptr = current_ptr->left;
-	}
-	else
-	{
+	else //other wise move it to the right
 		current_ptr = current_ptr->right;
-	}
 }
 
-template <class T>
-void play(binary_tree_node<string>* current_ptr) // play game
+void play(BinaryTreeNode<string>* current_ptr)	//play the game
 {
-	cout << "Think of an animal, then press enter.";
-	eat_line(); // hit enter key
+	cout << "Think of an animal..." << endl;
+	eat_line();	// user input
+	
+	while (!is_leaf(*current_ptr))	//if the current pointer is not empty
+		ask_and_move(current_ptr);	//then move the current pointer
 
-	while(!is_leaf(*current_ptr)) // if current_ptr is not empty
-	{
-		ask_move_q(current_ptr); // move the current_ptr
-	}
+	cout << ("My guess is a(n) " + current_ptr->data) << endl;	//programs guess
+	if (!inquire("Is this correct?"))	//if answers no
+		learn(current_ptr);	//then put the answer and question into the tree
+	else
+		cout << "I win!" << endl << "************************" << endl;	//other wise tell user it knew it
+}      
 
-	cout << ("My guess is " + current_ptr->data); // guess
-	if(!inquire(" Is that your animal?")) // if wrong
-	{
-		learn(current_ptr); // put q/a into tree
-	}
+// function to save the binary tree to file using preorder traversal
+void save_tree(BinaryTreeNode<string>* p, ostream &out)
+{
+	if(!p)	out << "";
 	else
 	{
-		cout << "I win!" << endl; // otherwise you lost
+		out << p->data << endl;
+		save_tree(p->left, out);
+		save_tree(p->right, out);
 	}
 }
 
-void eat_line()
+void write_to_file(BinaryTreeNode<string>* root_ptr)
 {
-	char next;
-	do {
-		cin.get(next);
-	} while( next != 'n');
-
+	ofstream output;
+	output.open("saveFILE.txt");
+	save_tree(root_ptr, output);
+	output.close();	
+	cout << endl << "saved to file: 'saveFILE.txt' " << endl << endl << endl;
 }
 
-bool inquire( const char query[])
-{
-	char answer;
 
-	do {
-		cout << query << "[y/n]" << endl;
-		cin >> answer;
-		answer = toupper(answer);
-		eat_line();
-	} while( (answer != 'y' ) && (answer != 'n' ));
-	return (answer == 'y');
-}
+
+
 
