@@ -1,0 +1,56 @@
+//the implementation file were the functions and classes are defined
+
+#include <cstdlib>
+
+template <class T>
+BinaryTreeNode<T>* create_node
+(
+ const Item& entry,
+ BinaryTreeNode<T>* l_ptr = NULL,
+ BinaryTreeNode<T>* r_ptr = NULL
+
+ )
+
+{
+	BinaryTreeNode<T> *result_ptr;
+
+	result_ptr = new BinaryTreeNode<T>;
+	result_ptr->data          = entry;
+	result_ptr->left          = l_ptr;
+	result_ptr->right         = r_ptr;
+
+	return result_ptr;
+}
+
+template <class T>
+bool is_leaf(const BinaryTreeNode<T>& node)
+{
+	return (node.left == NULL) && (node.right == NULL);
+}
+
+template <class T>
+void tree_clear(BinaryTreeNode<T>*& root_ptr)
+{
+	if (root_ptr != NULL)
+	{
+		tree_clear(root_ptr->left);
+		tree_clear(root_ptr->right);
+		delete root_ptr;
+		root_ptr = NULL;
+	}
+}
+
+template <class T>
+BinaryTreeNode<T>* tree_copy(BinaryTreeNode<T>* root_ptr)
+{
+	BinaryTreeNode<T> *l_ptr;
+	BinaryTreeNode<T> *r_ptr;
+	if (root_ptr == NULL)
+		return NULL;
+	else
+	{
+		l_ptr = tree_copy(root_ptr->left);
+		r_ptr = tree_copy(root_ptr->right);
+		return create_node(root_ptr->data, l_ptr, r_ptr);
+	}
+}
