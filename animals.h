@@ -1,46 +1,41 @@
 /*
-		FILE: animals.h
-		AUTHOR: Alex Patel
 
-		For CSCI 262, Spring 2014, Assignment 3
+	  FILE: animals.h
 
-		Header file for the game, 20 questions, with subject: animals
+	  AUTHOR: Alex Patel
+
+	  For CSCI 262 Spring 2014, Assignment 3, 20 questions  
+
 */
 
 #ifndef ANIMALS_H
 #define ANIMALS_H
-
-
-#include <iostream>
-#include <string>
 #include <cstdlib>
 
 template <class T>
-class binary_tree_node 
+struct BinaryTreeNode
 {
 	T data;
-	binary_tree_node<T>* left;
-	binary_tree_node<T>* right;
+	BinaryTreeNode *left;
+	BinaryTreeNode *right;
 };
 
 template <class T>
-binary_tree_node<T>* create_node
-	( const T& entry,
-	binary_tree_node<T>* Lptr,
-	binary_tree_node<T>* Rptr
-	);
+BinaryTreeNode<T>* create_node
+(
+ const T& entry,
+ BinaryTreeNode<T>* l_ptr,
+ BinaryTreeNode<T>* r_ptr
+ );
 
 template <class T>
-bool is_leaf(const binary_tree_node<T>& node );
+bool is_leaf(const BinaryTreeNode<T>& node);
 
 template <class T>
-void tree_clear(binary_tree_node<T>*& root_ptr );
+void tree_clear(BinaryTreeNode<T>*& root_ptr);
 
 template <class T>
-binary_tree_node<T>* tree_copy(binary_tree_node<T>* root_ptr );
+BinaryTreeNode<T>* tree_copy(BinaryTreeNode<T>* root_ptr);
 
-template <class T>
-void remove(binary_tree_node<T>*& root, T val);
-
-
+#include "bintree.template"
 #endif
